@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Plus, Loader2, Link as LinkIcon, Lock } from 'lucide-react';
+import { Trash2, Loader2, Link as LinkIcon, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import UltraAddButton from '@/components/UltraAddButton';
 
 interface Product {
     id: string;
@@ -21,9 +22,7 @@ export default function AdminPage() {
     const [password, setPassword] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
-    const [url, setUrl] = useState('');
-    const [adding, setAdding] = useState(false);
-    const [error, setError] = useState('');
+    const [loginError, setLoginError] = useState('');
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -48,43 +47,27 @@ export default function AdminPage() {
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        // Hardcoded password as requested by user ("905088" from history context, or I set a new one? User said "u make a passward"). 
-        // I will set it to "admin123" as per plan, but let's check history. Previous conv used 905088. I'll use that to be nice, or generic.
-        // Plan said "admin123". I'll use "admin123" and tell the user.
         if (password === '905088') {
             setIsAuthenticated(true);
-            setError('');
+            setLoginError('');
         } else {
-            setError('Invalid password');
+            setLoginError('Invalid password');
         }
     };
 
-    const handleAddProduct = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!url) return;
+    const handleAddProduct = async (url: string) => {
+        const res = await fetch('/api/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
+        });
 
-        setAdding(true);
-        setError('');
-
-        try {
-            const res = await fetch('/api/products', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url })
-            });
-
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || 'Failed to add product');
-            }
-
-            await fetchProducts();
-            setUrl('');
-        } catch (e: any) {
-            setError(e.message);
-        } finally {
-            setAdding(false);
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || 'Failed to add product');
         }
+
+        await fetchProducts();
     };
 
     const handleRemoveProduct = async (id: string) => {
@@ -93,10 +76,14 @@ export default function AdminPage() {
         try {
             const res = await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
-                setProducts(products.filter(p => p.id !== id));
+                setProducts(prev => prev.filter(p => p.id !== id));
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Failed to delete');
             }
         } catch (e) {
-            console.error(e);
+            console.error('Delete error:', e);
+            alert('Failed to delete product');
         }
     };
 
@@ -126,7 +113,7 @@ export default function AdminPage() {
                                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                             />
                         </div>
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
+                        {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
                         <button
                             type="submit"
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors"
@@ -160,53 +147,8 @@ export default function AdminPage() {
 
             <main className="max-w-7xl mx-auto px-6 py-6">
                 {/* Add Product Section */}
-                <section className="mb-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-800"
-                    >
-                        <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                            <Plus className="w-4 h-4 text-blue-600" />
-                            Add New Product
-                        </h2>
-                        <form onSubmit={handleAddProduct} className="flex gap-3">
-                            <div className="flex-1 relative">
-                                <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                <input
-                                    type="url"
-                                    value={url}
-                                    onChange={(e) => setUrl(e.target.value)}
-                                    placeholder="Paste product link here..."
-                                    className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                    required
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                disabled={adding}
-                                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-600/20"
-                            >
-                                {adding ? (
-                                    <>
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                        Scraping...
-                                    </>
-                                ) : (
-                                    'Add'
-                                )}
-                            </button>
-                        </form>
-                        {error && (
-                            <motion.p
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="mt-2 text-red-500 text-xs"
-                            >
-                                {error}
-                            </motion.p>
-                        )}
-                    </motion.div>
+                <section className="mb-12">
+                    <UltraAddButton onAdd={handleAddProduct} />
                 </section>
 
                 {/* Products List */}

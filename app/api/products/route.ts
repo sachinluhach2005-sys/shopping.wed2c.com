@@ -37,9 +37,9 @@ export async function POST(request: Request) {
         const updatedProducts = await addProduct(newProduct);
         return NextResponse.json(updatedProducts);
 
-    } catch (e) {
-        console.error(e);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    } catch (e: any) {
+        console.error('[API] POST Error:', e);
+        return NextResponse.json({ error: e.message || 'Internal Server Error' }, { status: 500 });
     }
 }
 
@@ -55,7 +55,8 @@ export async function DELETE(request: Request) {
         const updatedProducts = await removeProduct(id);
         return NextResponse.json(updatedProducts);
 
-    } catch (e) {
-        return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 });
+    } catch (e: any) {
+        console.error('[API] DELETE Error:', e);
+        return NextResponse.json({ error: e.message || 'Failed to delete product' }, { status: 500 });
     }
 }
