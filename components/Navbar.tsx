@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Suspense } from 'react';
 import SearchBar from './SearchBar';
 
 export default function Navbar() {
@@ -16,7 +17,9 @@ export default function Navbar() {
                         </Link>
                     </div>
 
-                    <SearchBar />
+                    <Suspense fallback={<div className="w-full max-w-md mx-4 h-10 bg-gray-50/50 rounded-full hidden md:block" />}>
+                        <SearchBar />
+                    </Suspense>
 
                     <nav className="flex items-center space-x-4">
                         <Link href="/admin" className="text-sm font-medium hover:text-blue-600 transition-colors">
