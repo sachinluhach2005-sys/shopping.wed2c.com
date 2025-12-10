@@ -7,7 +7,7 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+                            <img src="/logo.jpg" alt="Logo" className="w-8 h-8 object-contain" />
                             <span className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
                                 ShopWedc
                             </span>
