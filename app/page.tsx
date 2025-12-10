@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getProducts } from '@/lib/store';
 import { ShoppingBag, ArrowRight, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
+import CategoryButtons from '@/components/CategoryButtons';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,13 +39,16 @@ export default async function Home({
                   <p className="mx-auto max-w-2xl text-lg sm:text-xl text-gray-500 dark:text-gray-400 leading-relaxed">
                     Discover a curated selection of premium products designed for the modern individual. Quality, style, and innovation in every item.
                   </p>
-                  <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                  <div className="flex flex-col items-center gap-6 mt-8">
                     <Link
                       href="#products"
                       className="inline-flex h-14 items-center justify-center rounded-full bg-black dark:bg-white text-white dark:text-black px-10 text-base font-semibold shadow-xl hover:scale-105 transition-transform duration-300"
                     >
                       Shop Collection <ArrowRight className="ml-2 w-5 h-5" />
                     </Link>
+
+                    {/* Vertical Category Buttons */}
+                    <CategoryButtons />
                   </div>
                 </div>
               </div>
@@ -100,6 +104,7 @@ export default async function Home({
           </div>
 
           <div className="mt-12">
+            {/* Products Grid - Force Rebuild */}
             {products.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-32 text-center bg-gray-50 dark:bg-gray-900/50 rounded-3xl border border-dashed border-gray-200 dark:border-gray-800">
                 <div className="p-6 bg-white dark:bg-gray-800 rounded-full shadow-lg mb-6">
@@ -111,7 +116,7 @@ export default async function Home({
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
