@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { ShoppingBag, ArrowRight, ExternalLink } from 'lucide-react';
+import { useState } from 'react';
 
 interface Product {
     id: string;
@@ -13,6 +16,8 @@ interface Product {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
+    const [hasError, setHasError] = useState(false);
+
     return (
         <article
             className="group relative flex flex-col bg-white dark:bg-gray-900 rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 animate-fade-in"
@@ -24,16 +29,18 @@ export default function ProductCard({ product }: { product: Product }) {
                 rel="noreferrer"
                 className="block aspect-[4/3] relative overflow-hidden bg-gray-50 dark:bg-gray-800"
             >
-                {product.image ? (
+                {(product.image && !hasError) ? (
                     <Image
                         src={product.image}
                         alt={product.title}
                         fill
+                        unoptimized
+                        onError={() => setHasError(true)}
                         className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
                     />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 font-medium">
-                        No Image
+                    <div className="w-full h-full flex items-center justify-center text-gray-300 dark:text-gray-700 bg-gray-100 dark:bg-gray-800/50">
+                        <ShoppingBag className="w-12 h-12 opacity-50" />
                     </div>
                 )}
 

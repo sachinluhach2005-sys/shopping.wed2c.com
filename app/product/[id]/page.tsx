@@ -49,6 +49,7 @@ export default async function ProductPage({ params }: PageProps) {
                                     fill
                                     className="object-cover"
                                     priority
+                                    unoptimized
                                 />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-gray-400">
