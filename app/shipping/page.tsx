@@ -30,12 +30,12 @@ export default function ShippingPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">4. Customs, Duties and Taxes</h2>
-                            <p>ShoppingWed is not responsible for any customs and taxes applied to your order. All fees imposed during or after shipping are the responsibility of the customer (tariffs, taxes, etc.).</p>
+                            <p>ShopWedc is not responsible for any customs and taxes applied to your order. All fees imposed during or after shipping are the responsibility of the customer (tariffs, taxes, etc.).</p>
                         </section>
 
                         <section>
                             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">5. Damages</h2>
-                            <p>ShoppingWed is not liable for any products damaged or lost during shipping. If you received your order damaged, please contact the shipment carrier to file a claim.</p>
+                            <p>ShopWedc is not liable for any products damaged or lost during shipping. If you received your order damaged, please contact the shipment carrier to file a claim.</p>
                         </section>
                     </div>
                 </div>

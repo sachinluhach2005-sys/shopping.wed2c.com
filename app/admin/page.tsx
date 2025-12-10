@@ -130,8 +130,8 @@ export default function AdminPage() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
             <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
                 <div className="flex items-center gap-4">
-                    <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        ShoppingWed Admin
+                    <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
+                        ShopWedc Admin
                     </h1>
                     <a href="/" target="_blank" className="text-sm font-medium text-blue-600 hover:underline flex items-center gap-1">
                         Go to Shop <LinkIcon className="w-3 h-3" />

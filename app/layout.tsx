@@ -7,24 +7,24 @@ import Footer from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://shoppingwed.com'),
+  metadataBase: new URL('https://shopwedc.com'),
   title: {
-    default: 'ShoppingWed - Premium Products',
-    template: '%s | ShoppingWed',
+    default: 'ShopWedc - Luxury Collection',
+    template: '%s | ShopWedc',
   },
-  description: 'Discover curated premium products at ShoppingWed. Shop the latest trends in fashion, gadgets, and lifestyle.',
-  keywords: ['shopping', 'ecommerce', 'premium', 'deals', 'buy online'],
+  description: 'Discover curated luxury products at ShopWedc.',
+  keywords: ['shopping', 'ecommerce', 'premium', 'luxury', 'deals'],
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://shoppingwed.com',
-    siteName: 'ShoppingWed',
+    url: 'https://shopwedc.com',
+    siteName: 'ShopWedc',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'ShoppingWed',
+        alt: 'ShopWedc',
       },
     ],
   },

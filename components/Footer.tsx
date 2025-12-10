@@ -6,11 +6,14 @@ export default function Footer() {
             <div className="container mx-auto px-4 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="space-y-4">
-                        <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            ShoppingWed
-                        </span>
+                        <div className="flex items-center gap-2">
+                            <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+                            <span className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
+                                ShopWedc
+                            </span>
+                        </div>
                         <p className="text-sm text-gray-500">
-                            Premium shopping experience curated just for you.
+                            Luxury collection curated primarily for you.
                         </p>
                     </div>
                     <div>
@@ -38,7 +41,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8 text-center text-sm text-gray-500 flex flex-col items-center gap-2">
-                    <span>© {new Date().getFullYear()} ShoppingWed. All rights reserved.</span>
+                    <span>© {new Date().getFullYear()} ShopWedc. All rights reserved.</span>
                     <div className="flex items-center gap-2 text-xs opacity-70">
                         <div className={`w-2 h-2 rounded-full ${process.env.NEXT_PUBLIC_SUPABASE_URL ? 'bg-green-500' : 'bg-orange-500'}`} />
                         <span>System Status: {process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Database Connected' : 'Local Mode'}</span>

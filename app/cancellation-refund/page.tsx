@@ -25,7 +25,7 @@ export default function CancellationRefundPage() {
 
                         <div className="prose prose-blue max-w-none dark:prose-invert">
                             <p className="lead text-lg text-gray-600 dark:text-gray-300 mb-8">
-                                At ShoppingWed, we strive to provide the best possible shopping experience. Please review the following policies governing refunds, resends, and returns. If you have any issues, please contact our support team immediately.
+                                At ShopWedc, we strive to provide the best possible shopping experience. Please review the following policies governing refunds, resends, and returns. If you have any issues, please contact our support team immediately.
                             </p>
 
                             <div className="grid gap-8">

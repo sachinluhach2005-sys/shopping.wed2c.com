@@ -11,8 +11,11 @@ export default function Navbar() {
                 <div className="container flex h-16 items-center justify-between mx-auto px-4">
                     <div className="flex items-center gap-4">
                         <Link href="/" className="flex items-center space-x-2">
-                            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                ShoppingWed
+                            <div className="relative w-10 h-10">
+                                <img src="/logo.png" alt="ShopWedc Logo" className="object-contain w-full h-full" />
+                            </div>
+                            <span className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
+                                ShopWedc
                             </span>
                         </Link>
                     </div>

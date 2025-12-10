@@ -30,8 +30,8 @@ export default async function ProductPage({ params }: PageProps) {
                         <ArrowLeft className="w-5 h-5" />
                         Back to Shop
                     </Link>
-                    <Link href="/" className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        ShoppingWed
+                    <Link href="/" className="font-bold text-xl bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
+                        ShopWedc
                     </Link>
                     <div className="w-20" /> {/* Spacer */}
                 </div>
