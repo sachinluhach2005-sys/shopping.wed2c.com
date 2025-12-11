@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Loader2, Link as LinkIcon, Lock } from 'lucide-react';
+import { Trash2, Loader2, Link as LinkIcon, Lock, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import UltraAddButton from '@/components/UltraAddButton';
@@ -15,6 +15,7 @@ interface Product {
     image: string;
     currency: string;
     description: string;
+    isCelebrityChoice?: boolean;
 }
 
 export default function AdminPage() {
@@ -84,6 +85,38 @@ export default function AdminPage() {
         } catch (e) {
             console.error('Delete error:', e);
             alert('Failed to delete product');
+        }
+    };
+
+    const handleToggleCelebrity = async (product: Product) => {
+        const newStatus = !product.isCelebrityChoice;
+
+        // Optimistic Update
+        setProducts(prev => prev.map(p =>
+            p.id === product.id ? { ...p, isCelebrityChoice: newStatus } : p
+        ));
+
+        try {
+            const res = await fetch('/api/products', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: product.id, isCelebrityChoice: newStatus })
+            });
+
+            if (!res.ok) {
+                // Revert on failure
+                setProducts(prev => prev.map(p =>
+                    p.id === product.id ? { ...p, isCelebrityChoice: !newStatus } : p
+                ));
+                const data = await res.json();
+                alert(data.error || 'Failed to update');
+            }
+        } catch (e) {
+            console.error('Update error:', e);
+            // Revert on failure
+            setProducts(prev => prev.map(p =>
+                p.id === product.id ? { ...p, isCelebrityChoice: !newStatus } : p
+            ));
         }
     };
 
@@ -182,11 +215,26 @@ export default function AdminPage() {
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
                                             )}
-                                            <div className="absolute top-2 right-2">
+                                            <div className="absolute top-2 right-2 flex flex-col gap-2">
                                                 <span className="px-2 py-0.5 bg-white/90 backdrop-blur text-xs font-bold rounded-full shadow-sm">
                                                     {product.price}
                                                 </span>
                                             </div>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleToggleCelebrity(product);
+                                                }}
+                                                className={cn(
+                                                    "absolute top-2 left-2 p-2 rounded-full shadow-md backdrop-blur-md transition-all duration-300 group-hover:scale-110 z-10",
+                                                    product.isCelebrityChoice
+                                                        ? "bg-yellow-400 text-yellow-900 ring-2 ring-yellow-500/50"
+                                                        : "bg-white text-gray-400 hover:text-yellow-500 hover:bg-white"
+                                                )}
+                                                title={product.isCelebrityChoice ? "Remove from Celebrity Choice" : "Add to Celebrity Choice"}
+                                            >
+                                                <Star className={cn("w-4 h-4", product.isCelebrityChoice && "fill-current")} />
+                                            </button>
                                         </div>
                                         <div className="p-3 flex-1 flex flex-col">
                                             <h3 className="font-medium text-xs line-clamp-2 mb-2" title={product.title}>

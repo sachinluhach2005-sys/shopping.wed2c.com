@@ -13,9 +13,13 @@ export interface Product {
     price: string;
     currency: string;
     addedAt: string;
+    isCelebrityChoice?: boolean;
 }
 
-const USE_SUPABASE = !!supabase;
+// FORCE LOCAL STORAGE as per user request for "private project"
+// This prevents connection to Supabase even if keys exist in .env
+const FORCE_LOCAL_STORAGE = true;
+const USE_SUPABASE = !FORCE_LOCAL_STORAGE && !!supabase;
 
 console.log(`[Store] Using storage: ${USE_SUPABASE ? 'Supabase Postgres' : 'Local File System'}`);
 
@@ -35,12 +39,11 @@ export async function getProducts(query?: string): Promise<Product[]> {
             let queryBuilder = supabase!
                 .from('products')
                 .select('*')
+                // Sort by Celebrity Choice first, then by Added Date
+                .order('isCelebrityChoice', { ascending: false, nullsFirst: false })
                 .order('addedAt', { ascending: false });
 
             if (query) {
-                // Token-based search: Match ANY of the tokens in title OR description for Supabase
-                // Note: Full AND logic on multiple columns is hard in Supabase simple query builder without raw SQL or TextSearch.
-                // We use ".or()" which creates (col.ilike.a OR col.ilike.b).
                 const tokens = query.split(/\s+/).filter(t => t.length > 0);
                 if (tokens.length > 0) {
                     const orConditions = tokens.map(t => `title.ilike.%${t}%,description.ilike.%${t}%`).join(',');
@@ -52,7 +55,33 @@ export async function getProducts(query?: string): Promise<Product[]> {
 
             if (error) throw error;
             return (data as Product[]) || [];
-        } catch (e) {
+        } catch (e: any) {
+            // Fallback: If "isCelebrityChoice" column is missing (Code 42703), load without sorting by it
+            if (e.code === '42703') {
+                console.warn("[Store] 'isCelebrityChoice' column missing in Supabase. Loading products without custom sort.");
+                try {
+                    let retryQuery = supabase!
+                        .from('products')
+                        .select('*')
+                        .order('addedAt', { ascending: false });
+
+                    if (query) {
+                        const tokens = query.split(/\s+/).filter(t => t.length > 0);
+                        if (tokens.length > 0) {
+                            const orConditions = tokens.map(t => `title.ilike.%${t}%,description.ilike.%${t}%`).join(',');
+                            retryQuery = retryQuery.or(orConditions);
+                        }
+                    }
+                    const { data, error } = await retryQuery;
+                    if (error) throw error;
+                    return (data as Product[]) || [];
+
+                } catch (retryError) {
+                    console.error('[Store] Supabase Retry Error:', retryError);
+                    return [];
+                }
+            }
+
             console.error('[Store] Supabase Get Error:', e);
             return [];
         }
@@ -64,6 +93,16 @@ export async function getProducts(query?: string): Promise<Product[]> {
         const data = await fs.readFile(DB_PATH, 'utf-8');
         let products: Product[] = JSON.parse(data);
 
+        // Define sort function to reuse
+        const sortProducts = (a: Product, b: Product) => {
+            // Priority 1: Celebrity Choice
+            if (a.isCelebrityChoice !== b.isCelebrityChoice) {
+                return (a.isCelebrityChoice ? -1 : 1);
+            }
+            // Priority 2: Date Added
+            return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
+        };
+
         if (query) {
             const tokens = query.toLowerCase().split(/\s+/).filter(t => t.length > 0);
             products = products.filter(p => {
@@ -74,7 +113,7 @@ export async function getProducts(query?: string): Promise<Product[]> {
             });
         }
 
-        return products;
+        return products.sort(sortProducts);
     } catch (error) {
         console.error('[Store] File Read Error:', error);
         return [];
@@ -111,7 +150,7 @@ export async function addProduct(product: Product) {
             return products;
         }
 
-        const newProducts = [product, ...products];
+        const newProducts = [product, ...products]; // getProducts already sorts, but we add new one at top usually
         await fs.writeFile(DB_PATH, JSON.stringify(newProducts, null, 2));
 
         console.log('[Store] Product added locally');
@@ -141,6 +180,34 @@ export async function removeProduct(id: string) {
         return filtered;
     } catch (error) {
         console.error('[Store] Remove Product Error:', error);
+        throw error;
+    }
+}
+
+export async function updateProduct(id: string, updates: Partial<Product>) {
+    try {
+        if (USE_SUPABASE) {
+            const { error } = await supabase!
+                .from('products')
+                .update(updates)
+                .eq('id', id);
+
+            if (error) throw error;
+            console.log('[Store] Product updated in Supabase:', id);
+            return getProducts();
+        }
+
+        // Local Fallback
+        const products = await getProducts();
+        const updatedProducts = products.map(p =>
+            p.id === id ? { ...p, ...updates } : p
+        );
+
+        await fs.writeFile(DB_PATH, JSON.stringify(updatedProducts, null, 2));
+        console.log('[Store] Product updated locally:', id);
+        return updatedProducts;
+    } catch (error) {
+        console.error('[Store] Update Product Error:', error);
         throw error;
     }
 }

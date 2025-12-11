@@ -60,3 +60,21 @@ export async function DELETE(request: Request) {
         return NextResponse.json({ error: e.message || 'Failed to delete product' }, { status: 500 });
     }
 }
+
+export async function PATCH(request: Request) {
+    try {
+        const body = await request.json();
+        const { id, ...updates } = body;
+
+        if (!id) {
+            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+        }
+
+        const updatedProducts = await import('@/lib/store').then(m => m.updateProduct(id, updates));
+
+        return NextResponse.json(updatedProducts);
+    } catch (e: any) {
+        console.error('[API] PATCH Error:', e);
+        return NextResponse.json({ error: e.message || 'Failed to update product' }, { status: 500 });
+    }
+}
