@@ -33,6 +33,23 @@ async function ensureDB() {
     }
 }
 
+// Helper to save products with EROFS handling
+async function saveProducts(products: Product[]) {
+    try {
+        await fs.writeFile(DB_PATH, JSON.stringify(products, null, 2));
+    } catch (error: any) {
+        if (error.code === 'EROFS') {
+            throw new Error(
+                'CANNOT EDIT ON LIVE SITE.\n' +
+                'Since you are using "Private Local Mode", the live site is Read-Only.\n' +
+                '1. Make changes (Add/Remove/Star) on your LOCALHOST.\n' +
+                '2. Run "git push" to update the live site.'
+            );
+        }
+        throw error;
+    }
+}
+
 export async function getProducts(query?: string): Promise<Product[]> {
     if (USE_SUPABASE) {
         try {
@@ -158,7 +175,7 @@ export async function addProduct(product: Product) {
         }
 
         const newProducts = [product, ...products]; // getProducts already sorts, but we add new one at top usually
-        await fs.writeFile(DB_PATH, JSON.stringify(newProducts, null, 2));
+        await saveProducts(newProducts);
 
         console.log('[Store] Product added locally');
         return newProducts;
@@ -181,8 +198,7 @@ export async function removeProduct(id: string) {
         // Local Fallback
         const products = await getProducts();
         const filtered = products.filter(p => p.id !== id);
-        await fs.writeFile(DB_PATH, JSON.stringify(filtered, null, 2));
-
+        await saveProducts(filtered);
         console.log('[Store] Product removed locally:', id);
         return filtered;
     } catch (error) {
@@ -210,7 +226,7 @@ export async function updateProduct(id: string, updates: Partial<Product>) {
             p.id === id ? { ...p, ...updates } : p
         );
 
-        await fs.writeFile(DB_PATH, JSON.stringify(updatedProducts, null, 2));
+        await saveProducts(updatedProducts);
         console.log('[Store] Product updated locally:', id);
         return updatedProducts;
     } catch (error) {
