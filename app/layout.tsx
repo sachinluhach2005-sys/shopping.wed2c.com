@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ChatBot from '@/components/ChatBot';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -40,10 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased min-h-screen flex flex-col`} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} antialiased min-h-screen flex flex-col`}>
         <Navbar />
         {children}
+        <ChatBot />
         <Footer />
       </body>
     </html>

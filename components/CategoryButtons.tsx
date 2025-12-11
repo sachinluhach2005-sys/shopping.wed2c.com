@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Snowflake, Shirt, Footprints, Layers } from 'lucide-react';
+import { Snowflake, Shirt, Footprints, Layers, Drama, Watch } from 'lucide-react';
 
 export default function CategoryButtons() {
     const categories = [
@@ -7,6 +7,8 @@ export default function CategoryButtons() {
         { name: 'Shirts', query: 'shirt', icon: Shirt },
         { name: 'Pants', query: 'pant', icon: Layers },
         { name: 'Shoes', query: 'shoe', icon: Footprints },
+        { name: 'Masks', query: 'mask', icon: Drama },
+        { name: 'Accessories', query: 'sock+undergarment+belt+perfume+watch+boxer+brief', icon: Watch },
     ];
 
     return (

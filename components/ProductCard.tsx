@@ -49,11 +49,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* Content Section */}
-                <div className="absolute top-2 right-2 bg-white/90 dark:bg-black/90 backdrop-blur px-2 py-0.5 rounded-full shadow-sm z-10 transition-all">
-                    <span className="text-[10px] md:text-xs font-bold font-mono text-gray-900 dark:text-white">
-                        {product.currency} {product.price}
-                    </span>
-                </div>
+
             </a>
 
             {/* Content Section */}
@@ -76,9 +72,7 @@ export default function ProductCard({ product }: { product: Product }) {
                             "Premium Quality"
                         )}
                     </span>
-                    <span className="flex items-center gap-1 text-blue-600">
-                        In Stock
-                    </span>
+
                 </div>
             </div>
         </article>

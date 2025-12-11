@@ -94,12 +94,17 @@ export async function getProducts(query?: string): Promise<Product[]> {
         let products: Product[] = JSON.parse(data);
 
         // Define sort function to reuse
+        // Define sort function to reuse
         const sortProducts = (a: Product, b: Product) => {
-            // Priority 1: Celebrity Choice
+            // If searching/filtering (Category View), prioritize NEWEST first
+            if (query) {
+                return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
+            }
+
+            // Default (Home View): Priority 1: Celebrity Choice, Priority 2: Date
             if (a.isCelebrityChoice !== b.isCelebrityChoice) {
                 return (a.isCelebrityChoice ? -1 : 1);
             }
-            // Priority 2: Date Added
             return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
         };
 
@@ -109,7 +114,9 @@ export async function getProducts(query?: string): Promise<Product[]> {
                 const text = (p.title + ' ' + p.description).toLowerCase();
                 // "Analyze keywords": If user searches "blue hoodie", they want things that are BOTH blue AND hoodie.
                 // AND logic is generally better for "finding that product".
-                return tokens.every(token => text.includes(token));
+                // BUT for category buttons (e.g. "hoodie+sweater"), we want OR logic.
+                // Given the user request, we switch to OR (some) to support the category buttons.
+                return tokens.some(token => text.includes(token));
             });
         }
 

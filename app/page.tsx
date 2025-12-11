@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getProducts } from '@/lib/store';
 import { ShoppingBag, ArrowRight, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
-import ProductCard from '@/components/ProductCard';
+import ProductGrid from '@/components/ProductGrid';
 import CategoryButtons from '@/components/CategoryButtons';
 
 export const dynamic = 'force-dynamic';
@@ -104,24 +104,7 @@ export default async function Home({
           </div>
 
           <div className="mt-12">
-            {/* Products Grid - Force Rebuild */}
-            {products.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-32 text-center bg-gray-50 dark:bg-gray-900/50 rounded-3xl border border-dashed border-gray-200 dark:border-gray-800">
-                <div className="p-6 bg-white dark:bg-gray-800 rounded-full shadow-lg mb-6">
-                  <ShoppingBag className="w-12 h-12 text-gray-300" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No products found</h3>
-                <p className="text-gray-500 max-w-sm mx-auto">
-                  We couldn't find any products matching your criteria. Try searching for something else.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
-                {products.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            )}
+            <ProductGrid products={products} isSearch={!!q} />
           </div>
         </section>
       </main>

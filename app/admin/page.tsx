@@ -215,11 +215,7 @@ export default function AdminPage() {
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
                                             )}
-                                            <div className="absolute top-2 right-2 flex flex-col gap-2">
-                                                <span className="px-2 py-0.5 bg-white/90 backdrop-blur text-xs font-bold rounded-full shadow-sm">
-                                                    {product.price}
-                                                </span>
-                                            </div>
+
                                             <button
                                                 onClick={(e) => {
                                                     e.preventDefault();
