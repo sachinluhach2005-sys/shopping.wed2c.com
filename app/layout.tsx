@@ -45,7 +45,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased min-h-screen flex flex-col`}>
         <Navbar />
         {children}
-        <ChatBot />
+        {/* <ChatBot /> */}
         <Footer />
       </body>
     </html>
